@@ -1,0 +1,25 @@
+sudo: required
+dist: xenial
+
+#services:
+#  - docker
+
+env:
+  global:
+    - KUBEVIRT_VER=v0.8.0
+  matrix:
+    - CDIST=kubernetes CVER=1.10.7
+    - CDIST=kubernetes CVER=1.11.2
+    - CDIST=origin CVER=3.10.0
+
+before_script:
+## FIXME Workaround for https://github.com/kubernetes/kubernetes/issues/61058
+### And https://github.com/LiliC/travis-minikube/blob/e0f26f7b388057f51a0e2558afd5f990e07b6c49/.travis.yml#L11
+- sudo mount --make-rshared /
+
+- bash -x ci/prepare-host $CDIST $CVER
+- bash -x ci/start-cluster $CDIST $CVER
+- bash -x ci/deploy-kubevirt $CDIST $KUBEVIRT_VER
+
+script:
+- timeout 5m bash test.sh
