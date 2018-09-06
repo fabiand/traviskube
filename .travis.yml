@@ -17,9 +17,9 @@ before_script:
 ### And https://github.com/LiliC/travis-minikube/blob/e0f26f7b388057f51a0e2558afd5f990e07b6c49/.travis.yml#L11
 - sudo mount --make-rshared /
 
-- bash -x ci/prepare-host $CDIST $CVER
-- bash -x ci/start-cluster $CDIST $CVER
-- bash -x ci/deploy-kubevirt $CDIST $KUBEVIRT_VER
+- bash -x prepare-host $CDIST $CVER
+- bash -x start-cluster $CDIST $CVER
+- bash -x deploy-kubevirt $CDIST $KUBEVIRT_VER
 
 script:
 - timeout 5m bash test.sh
