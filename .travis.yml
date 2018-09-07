@@ -11,6 +11,7 @@ env:
     - CPLATFORM=minikube CDIST=kubernetes CVER=1.10.7
     - CPLATFORM=minikube CDIST=kubernetes CVER=1.11.2
     - CPLATFORM=oc_cluster CDIST=origin CVER=3.10.0
+    - CPLATFORM=minishift CDIST=origin CVER=3.10.0
 
 before_script:
 ## FIXME Workaround for https://github.com/kubernetes/kubernetes/issues/61058

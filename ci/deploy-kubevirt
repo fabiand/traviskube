@@ -23,3 +23,4 @@ _origin() {
 _$1 $2
 
 timeout 2m ci/wait-pods-ok
+kubectl describe nodes
