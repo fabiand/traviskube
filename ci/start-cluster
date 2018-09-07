@@ -1,30 +1,30 @@
 #!/bin/bash
-# usage: start-cluster (kubernetes|origin) $VERSION
+# usage: start-cluster (minikube|oc_cluster) $VERSION
 
 set -e
 
-kubernetes() {
-  local VER=$1
+_minikube() {
+  local CVER=$1
 
   export MINIKUBE_WANTUPDATENOTIFICATION=false
   export MINIKUBE_WANTREPORTERRORPROMPT=false
-  export MINIKUBE_HOME=$HOME
   export CHANGE_MINIKUBE_NONE_USER=true
+
+  export MINIKUBE_HOME=$HOME
   mkdir -p $HOME/.kube
   touch $HOME/.kube/config
-
   export KUBECONFIG=$HOME/.kube/config
 
-  sudo -E minikube start \
+  sudo minikube start \
     --vm-driver=none \
-    --kubernetes-version=v$VER \
+    --kubernetes-version=v$CVER \
     --feature-gates=DevicePlugins=true
 
   minikube update-context
 }
 
-origin() {
-  local VER=$1
+_oc_cluster() {
+  local CVER=$1
 
   oc version
   oc cluster up --skip-registry-check --enable=-router,-sample-templates
@@ -42,6 +42,6 @@ origin() {
   #sudo mount --make-rshared $KUBELET_ROOTFS/var/lib/kubelet/device-plugins
 }
 
-$1 $2
+_$1 $2
 
 timeout 1m bash ci/wait-pods-ok

@@ -1,9 +1,9 @@
 #!/bin/bash
-# usage: prepare-host (kubernetes|origin) $VERSION
+# usage: prepare-host (minikube|oc_cluster) $VERSION
 
 set -e
 
-kubernetes() {
+_minikube() {
   local CVER=$1
 
   curl -Lo kubectl \
@@ -23,7 +23,7 @@ kubernetes() {
   sudo install -m a+x minikube /usr/local/bin
 }
 
-origin() {
+_oc_cluster() {
   local CVER=$1
 
   sudo sed -i 's%DOCKER_OPTS=\"%DOCKER_OPTS=\"--insecure-registry 172.30.0.0/16 %' /etc/default/docker
@@ -38,4 +38,4 @@ origin() {
   sudo ln -sf /usr/local/bin/oc /usr/local/bin/kubectl
 }
 
-$1 $2
+_$1 $2
