@@ -49,16 +49,21 @@ _minishift() {
 
   sudo install -m a+x minishift /usr/local/bin
 
+  # User CI key
   USSH=$HOME/.ssh
   mkdir -p $USSH
   ssh-keygen -t rsa -N '' -f $USSH/ci_id_rsa
-  echo 'Host localhost' >> $USSH/config
-  echo '  StrictHostKeyChecking no' >> $USSH/config
-  chmod g-rw,o-rw $USSH/* $USSH
+  cat >> $USSH/config <<EOF
+Host localhost
+  StrictHostKeyChecking no
+EOF
 
-  sudo mkdir -p /root/.ssh
-  sudo sh -c "cat $USSH/ci_id_rsa.pub >> /root/.ssh/authorized_keys"
-  sudo sh -c "chmod g-rw,o-rw /root/.ssh /root/.ssh/*"
+  # Allow User CI key to login as root
+  sudo bash <<EOF
+mkdir -p /root/.ssh
+cat $USSH/ci_id_rsa.pub >> /root/.ssh/authorized_keys
+chmod g-rw,o-rw /root/.ssh /root/.ssh/* $USSH/* $USSH
+EOF
 
   __install_oc
 }
