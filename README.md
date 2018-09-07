@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/fabiand/traviskube.svg?branch=master)](https://travis-ci.com/fabiand/traviskube)
+
 Skeletton to run Kubernetes and OpenShift Origin clusters on Travis CI.
 
 # Usage
