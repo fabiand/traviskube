@@ -61,7 +61,7 @@ _minikube() {
   _install_bin kubectl
 
   _cache crictl "curl -L \
-    https://github.com/kubernetes-incubator/cri-tools/releases/download/v1.11.1/crictl-v1.11.1-linux-amd64.tar.gz \
+    https://github.com/kubernetes-incubator/cri-tools/releases/download/v1.12.0/crictl-v1.12.0-linux-amd64.tar.gz \
     | tar xz crictl"
 
   _install_bin crictl

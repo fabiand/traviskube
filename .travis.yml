@@ -13,7 +13,10 @@ env:
 jobs:
   include:
     - stage: Tests
-      name: "minikube (1.11)"
+      name: "minikube (1.12)"
+      env: CPLATFORM=minikube CDIST=kubernetes CVER=1.12.1
+
+    - name: "minikube (1.11)"
       env: CPLATFORM=minikube CDIST=kubernetes CVER=1.11.3
 
     - name: "oc cluster (3.10)"
