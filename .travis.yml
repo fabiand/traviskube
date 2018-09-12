@@ -18,6 +18,8 @@ env:
 cache:
   directories:
   - cache
+  - ~/.minishift/cache
+  - ~/.minikube/cache
 
 before_script:
 ## FIXME Workaround for https://github.com/kubernetes/kubernetes/issues/61058
