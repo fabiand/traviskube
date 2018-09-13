@@ -1,5 +1,5 @@
 #!/bin/bash
-# usage: prepare-host (minikube|oc_cluster) $VERSION
+# usage: prepare-host (minikube|oc_cluster|minishift|virtctl) $VERSION
 
 set -e
 
@@ -20,6 +20,27 @@ _cache() {
   ln -fv "cache/$BIN" "$BIN"
 }
 
+_virtctl() {
+  local VER=$1
+
+  _cache virtctl "curl -Lo virtctl \
+    https://github.com/kubevirt/kubevirt/releases/download/$VER/virtctl-$VER-linux-amd64"
+
+  sudo install -m a+x virtctl /usr/local/bin
+}
+
+__install_oc() {
+  local CVER=$1
+
+  _cache oc "curl -L \
+    https://github.com/openshift/origin/releases/download/v$CVER/openshift-origin-client-tools-v3.10.0-dd10d17-linux-64bit.tar.gz \
+    | tar xz --strip-components=1 openshift-origin-client-tools-v3.10.0-dd10d17-linux-64bit/oc"
+
+  sudo install -m a+x oc /usr/local/bin
+
+  # For compatibility
+  sudo ln -sf /usr/local/bin/oc /usr/local/bin/kubectl
+}
 
 _minikube() {
   local CVER=$1
@@ -41,27 +62,18 @@ _minikube() {
   sudo install -m a+x minikube /usr/local/bin
 }
 
-__install_oc() {
-  _cache oc "curl -L \
-    https://github.com/openshift/origin/releases/download/v$CVER/openshift-origin-client-tools-v3.10.0-dd10d17-linux-64bit.tar.gz \
-    | tar xz --strip-components=1 openshift-origin-client-tools-v3.10.0-dd10d17-linux-64bit/oc"
-
-  sudo install -m a+x oc /usr/local/bin
-
-  # For compatibility
-  sudo ln -sf /usr/local/bin/oc /usr/local/bin/kubectl
-}
-
 _oc_cluster() {
   local CVER=$1
 
   sudo sed -i 's%DOCKER_OPTS=\"%DOCKER_OPTS=\"--insecure-registry 172.30.0.0/16 %' /etc/default/docker
   sudo systemctl restart docker
 
-  __install_oc
+  __install_oc $CVER
 }
 
 _minishift() {
+  local CVER=$1
+
   _cache minishift "curl -L \
     https://github.com/minishift/minishift/releases/download/v1.23.0/minishift-1.23.0-linux-amd64.tgz \
     | tar xz --strip-components=1 minishift-1.23.0-linux-amd64/minishift"
@@ -84,7 +96,7 @@ cat $USSH/ci_id_rsa.pub >> /root/.ssh/authorized_keys
 chmod g-rw,o-rw /root/.ssh /root/.ssh/* $USSH/* $USSH
 EOF
 
-  __install_oc
+  __install_oc $CVER
 }
 
 _$1 $2
