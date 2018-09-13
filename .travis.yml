@@ -27,6 +27,7 @@ before_script:
 - sudo mount --make-rshared /
 
 - bash -x ci/prepare-host $CPLATFORM $CVER
+- bash -x ci/prepare-host virtctl $KUBEVIRT_VER
 - bash -x ci/start-cluster $CPLATFORM $CVER
 - bash -x ci/deploy-kubevirt $CDIST $KUBEVIRT_VER
 
