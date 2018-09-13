@@ -23,4 +23,8 @@ _origin() {
 _$1 $2
 
 timeout 2m ci/wait-pods-ok
+
+# Give kvm some time to be announced
+sleep 12
+
 kubectl describe nodes
