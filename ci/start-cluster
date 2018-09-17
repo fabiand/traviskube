@@ -17,8 +17,8 @@ _minikube() {
 
   sudo minikube start \
     --vm-driver=none \
-    --kubernetes-version=v$CVER \
-    --feature-gates=DevicePlugins=true
+    --kubernetes-version=v$CVER
+#    --feature-gates=DevicePlugins=true
 
   minikube update-context
 }
