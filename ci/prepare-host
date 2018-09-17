@@ -8,16 +8,18 @@ _cache() {
   shift 1
   local FETCHCMD="$@"
 
+  local KEY=$(md5sum <<<"$FETCHCMD" | cut -d " " -f1)
+
   [[ ! -d cache ]] && mkdir cache
 
-  if [[ ! -e "cache/$BIN" ]];
+  if [[ ! -e "cache/$KEY" ]];
   then
     # We expect the FETCHCMD to provide $BIN in $PWD
     eval "$FETCHCMD"
-    mv "$BIN" "cache/$BIN"
+    mv "$BIN" "cache/$KEY"
   fi
 
-  ln -fv "cache/$BIN" "$BIN"
+  ln -fv "cache/$KEY" "$BIN"
 }
 
 _virtctl() {
