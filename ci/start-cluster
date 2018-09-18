@@ -15,7 +15,7 @@ _minikube() {
   touch $HOME/.kube/config
   export KUBECONFIG=$HOME/.kube/config
 
-  sudo minikube start \
+  sudo -E minikube start \
     --vm-driver=none \
     --kubernetes-version=v$CVER
 #    --feature-gates=DevicePlugins=true
