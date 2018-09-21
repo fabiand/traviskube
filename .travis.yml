@@ -4,22 +4,32 @@ dist: xenial
 branches:
   only:
   - master
-  - /^v[0-9]/
+  - "/^v[0-9]/"
 
 env:
   global:
     - KUBEVIRT_VER=v0.8.0
-  matrix:
-    - CPLATFORM=minikube CDIST=kubernetes CVER=1.11.3
-    - CPLATFORM=oc_cluster CDIST=origin CVER=3.10.0
-    - CPLATFORM=minishift CDIST=origin CVER=3.10.0
-    - CPLATFORM=minikube CDIST=kubernetes CVER=1.10.7
+
+jobs:
+  include:
+    - stage: Tests
+      name: minkube (1.11)
+      env: CPLATFORM=minikube CDIST=kubernetes CVER=1.11.3
+
+    - name: oc cluster (3.10)
+      env: CPLATFORM=oc_cluster CDIST=origin CVER=3.10.0
+
+    - name: minishift (3.10)
+      env: CPLATFORM=minishift CDIST=origin CVER=3.10.0
+
+    - name: minikube (1.10)
+      CPLATFORM=minikube CDIST=kubernetes CVER=1.10.7
 
 cache:
   directories:
   - cache
-  - ~/.minishift/cache
-  - ~/.minikube/cache
+  - "~/.minishift/cache"
+  - "~/.minikube/cache"
 
 before_script:
 ## FIXME Workaround for https://github.com/kubernetes/kubernetes/issues/61058
