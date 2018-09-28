@@ -95,7 +95,7 @@ _minishift() {
   # Fix DP path
   KUBELET_CONTAINER=\$(sudo docker ps | grep kubelet | cut -d" " -f1)
   docker exec \$KUBELET_CONTAINER touch /barbar
-  KUBELET_ROOTFS=\$(dirname \$(sudo find /var/lib/docker/aufs/mnt -name barbar))
+  KUBELET_ROOTFS=\$(dirname \$(sudo sh -c "find /var/lib/docker/aufs/mnt /var/lib/docker/overlay2/*/merged -name barbar"))
 
   [[ -n "\$KUBELET_ROOTFS" ]]
 
