@@ -18,7 +18,6 @@ _minikube() {
   sudo -E minikube start \
     --vm-driver=none \
     --kubernetes-version=v$CVER
-#    --feature-gates=DevicePlugins=true
 
   minikube update-context
 }
@@ -28,23 +27,6 @@ _oc_cluster() {
 
   oc version
   oc cluster up --skip-registry-check --enable=-router,-sample-templates
-
-
-  # Workaround for https://github.com/openshift/origin/pull/20351
-  #
-  # Enable feature gate
-  oc cluster down
-  sed -i "/kind/ a\kubeletArguments:\n  feature-gates:\n  - DevicePlugins=true" $PWD/openshift.local.clusterup/node/node-config.yaml
-  oc cluster up --skip-registry-check
-
-  #
-  # Fix DP path
-  KUBELET_ROOTFS=$(sudo docker inspect $(sudo docker ps | grep kubelet | cut -d" " -f1) | jq -r ".[0].GraphDriver.Data.MergedDir" -)
-  sudo mkdir -p /var/lib/kubelet/device-plugins $KUBELET_ROOTFS/var/lib/kubelet/device-plugins
-  sudo mount -o bind $KUBELET_ROOTFS/var/lib/kubelet/device-plugins /var/lib/kubelet/device-plugins
-  sudo ls /var/lib/kubelet/device-plugins
-  #sudo mount --make-rshared $KUBELET_ROOTFS/var/lib/kubelet/device-plugins
-  # Workaround DONE
 
   oc login -u system:admin
 }
@@ -59,51 +41,6 @@ _minishift() {
     --remote-ssh-user root \
     --remote-ssh-key $HOME/.ssh/ci_id_rsa \
     --openshift-version=v$CVER
-
-  # Workaround for https://github.com/openshift/origin/pull/20351
-  minishift ssh -- bash <<EOF
-  set -xe
-  id
-
-  #
-  # Enable feature gate
-  # vm-driver=generic 
-  _NODECFG=/var/lib/minishift/openshift.local/config/node-localhost/node-config.yaml
-  if [[ -f "\$_NODECFG" ]];
-  then
-    NODECFG=\$_NODECFG
-  else
-    # vm-driver=generic
-    NODECFG=/var/lib/minishift/base/node/node-config.yaml
-  fi
-
-  [[ -f "\$NODECFG" ]]
-
-  # If it has a kubeletArguments key:
-  if grep kubeletArguments \$NODECFG;
-  then
-    sed -e "/kubeletArguments/ a\  feature-gates:" \$NODECFG
-    sed -e "/feature-gates/ a\  - DevicePlugins: true" \$NODECFG
-  # If it hasnt:
-  else
-    sed -i "/kind/ a\kubeletArguments:\n  feature-gates:\n  - DevicePlugins=true" \$NODECFG
-  fi
-  # Featur gate enabled
-  #
-
-  #
-  # Fix DP path
-  KUBELET_CONTAINER=\$(sudo docker ps | grep kubelet | cut -d" " -f1)
-  docker exec \$KUBELET_CONTAINER touch /barbar
-  KUBELET_ROOTFS=\$(dirname \$(sudo sh -c "find /var/lib/docker/aufs/mnt /var/lib/docker/overlay2/*/merged -name barbar"))
-
-  [[ -n "\$KUBELET_ROOTFS" ]]
-
-  sudo mkdir -p /var/lib/kubelet/device-plugins \$KUBELET_ROOTFS/var/lib/kubelet/device-plugins
-  sudo mount -o bind \$KUBELET_ROOTFS/var/lib/kubelet/device-plugins /var/lib/kubelet/device-plugins
-  sudo ls /var/lib/kubelet/device-plugins
-  # Workaround DONE
-EOF
 
   oc login -u system:admin
 }
