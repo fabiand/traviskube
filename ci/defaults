@@ -1,0 +1,10 @@
+DEFAULT_PLATFORM=minikube
+DEFAULT_CLUSTER=kubernetes
+# Intentionally unset, as set my platform usually
+DEFAULT_CLUSTER_VERSION=
+DEFAULT_KUBEVIRT_VER=0.9.1
+
+declare -A CDIST_ON
+CDIST_ON[minikube]=kubernetes
+CDIST_ON[minishift]=origin
+CDIST_ON[oc_cluster]=origin
