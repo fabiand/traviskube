@@ -1,4 +1,4 @@
 kubectl logs -l kubevirt.io=virt-handler
 kubectl get events --all-namespaces
-
-kubectl describe nodes | grep devices.kubevirt.io/tun
+kubectl get pods --all-namespaces
+kubectl describe nodes | tee /dev/stderr | grep devices.kubevirt.io/tun
