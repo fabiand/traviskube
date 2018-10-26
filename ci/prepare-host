@@ -67,7 +67,7 @@ _minikube() {
   _install_bin crictl
 
   _cache minikube "curl -Lo minikube \
-    https://storage.googleapis.com/minikube/releases/v0.29.0/minikube-linux-amd64"
+    https://storage.googleapis.com/minikube/releases/v0.30.0/minikube-linux-amd64"
 
   _install_bin minikube
 }
