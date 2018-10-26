@@ -5,6 +5,9 @@ set -e
 
 source ci/defaults
 
+warn() { echo "WARN: $@" >&2 ; }
+condarg() { [[ -n "$2" ]] && echo "$1$2"; }
+
 _minikube() {
   local CVER=$1
 
@@ -19,7 +22,7 @@ _minikube() {
 
   sudo -E minikube start \
     --vm-driver=none \
-    --kubernetes-version=v$CVER
+    $(condarg "--kubernetes-version=v" $CVER)
 #    --feature-gates=DevicePlugins=true
 
   minikube update-context
@@ -27,6 +30,12 @@ _minikube() {
 
 _oc_cluster() {
   local CVER=$1
+
+  [[ -n "$CVER" ]] && {
+    warn "Version '$CVER' was requested."
+    warn "oc cluster does not supporting setting a version."
+    warn "This is not criticial. Continuing."
+  } 2>/dev/stderr
 
   oc version
   oc cluster up --skip-registry-check --enable=-router,-sample-templates
@@ -60,7 +69,7 @@ _minishift() {
     --remote-ipaddress 127.0.0.1 \
     --remote-ssh-user root \
     --remote-ssh-key $HOME/.ssh/ci_id_rsa \
-    --openshift-version=v$CVER
+    $(condarg "--openshift-version=v" $CVER)
 
   # Workaround for https://github.com/openshift/origin/pull/20351
   minishift ssh -- bash <<EOF
