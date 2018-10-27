@@ -21,3 +21,10 @@ git commit -asm "Add .travis.yml"
 ```
 
 Go to github and enable travisci.
+
+# Workarounds
+
+This repo tries to establish the convention that any workaround that is needed
+to a stock platform deployment is placed in a separate file (`workaround`).
+
+This shall help users to understand if it's a straight deployment - or not.

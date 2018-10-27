@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+
+#
+# If this file is empty, then no workarounds for any are required
+#
+# If this file is NOT empty, then some platform might require a workaround
+#
+
+# Add a workaround here
+
+_$@
