@@ -24,7 +24,7 @@ _origin() {
 
 _${CDIST_ON[${1:-$DEFAULT_PLATFORM}]} ${2:-$DEFAULT_KUBEVIRT_VER}
 
-timeout 2m ci/wait-pods-ok
+timeout 5m ci/wait-pods-ok
 
 # Give kvm some time to be announced
 sleep 12
