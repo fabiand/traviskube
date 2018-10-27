@@ -40,23 +40,6 @@ _oc_cluster() {
   oc version
   oc cluster up --skip-registry-check --enable=-router,-sample-templates
 
-
-  # Workaround for https://github.com/openshift/origin/pull/20351
-  #
-  # Enable feature gate
-  oc cluster down
-  sed -i "/kind/ a\kubeletArguments:\n  feature-gates:\n  - DevicePlugins=true" $PWD/openshift.local.clusterup/node/node-config.yaml
-  oc cluster up --skip-registry-check
-
-  #
-  # Fix DP path
-  KUBELET_ROOTFS=$(sudo docker inspect $(sudo docker ps | grep kubelet | cut -d" " -f1) | jq -r ".[0].GraphDriver.Data.MergedDir" -)
-  sudo mkdir -p /var/lib/kubelet/device-plugins $KUBELET_ROOTFS/var/lib/kubelet/device-plugins
-  sudo mount -o bind $KUBELET_ROOTFS/var/lib/kubelet/device-plugins /var/lib/kubelet/device-plugins
-  sudo ls /var/lib/kubelet/device-plugins
-  #sudo mount --make-rshared $KUBELET_ROOTFS/var/lib/kubelet/device-plugins
-  # Workaround DONE
-
   oc login -u system:admin
 }
 
