@@ -3,7 +3,7 @@
 
 set -e
 
-source ci/defaults
+source $(dirname $(realpath $0))/defaults
 
 _cache() {
   local BIN="$1"
