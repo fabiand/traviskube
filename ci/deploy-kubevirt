@@ -1,17 +1,21 @@
 #!/bin/bash
-# usage: deploy-kubevirt (kubernetes|origin) $KUBEVIRT_VERSION
+# usage: deploy-kubevirt (minikube|minishift|oc_cluster) $KUBEVIRT_VERSION
 
 set -e
+
+source ci/defaults
 
 _kubernetes() {
   local VER=$1
 
   kubectl create configmap -n kube-system kubevirt-config --from-literal debug.useEmulation=true || :
-  kubectl apply -f https://github.com/kubevirt/kubevirt/releases/download/$VER/kubevirt.yaml ;
+  kubectl apply -f https://github.com/kubevirt/kubevirt/releases/download/v$VER/kubevirt.yaml ;
 }
 
 _origin() {
   local VER=$1
+
+  oc login -u system:admin
 
   _kubernetes $VER
 
@@ -20,9 +24,9 @@ _origin() {
   oc adm policy add-scc-to-user privileged -n kube-system -z kubevirt-apiserver
 }
 
-_$1 $2
+_${CDIST_ON[${1:-$DEFAULT_PLATFORM}]} ${2:-$DEFAULT_KUBEVIRT_VER}
 
-timeout 2m ci/wait-pods-ok
+timeout 5m ci/wait-pods-ok
 
 # Give kvm some time to be announced
 sleep 12

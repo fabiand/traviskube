@@ -1,7 +1,9 @@
 #!/bin/bash
-# usage: prepare-host (minikube|oc_cluster|minishift|virtctl|oc) $VERSION
+# usage: prepare-host (minikube|oc_cluster|minishift|virtctl|oc)
 
 set -e
+
+source ci/defaults
 
 _cache() {
   local BIN="$1"
@@ -37,8 +39,6 @@ _virtctl() {
 }
 
 _oc() {
-  local VER=$1
-
   _cache oc "curl -L \
     https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz \
     | tar xz --strip-components=1 openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit/oc"
@@ -52,19 +52,24 @@ _oc() {
   fi
 }
 
-_minikube() {
-  local CVER=$1
-
+_kubectl() {
   _cache kubectl "curl -Lo kubectl \
-    https://storage.googleapis.com/kubernetes-release/release/v$CVER/bin/linux/amd64/kubectl"
+    https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl"
 
   _install_bin kubectl
+}
 
+_crictl() {
   _cache crictl "curl -L \
-    https://github.com/kubernetes-incubator/cri-tools/releases/download/v1.11.1/crictl-v1.11.1-linux-amd64.tar.gz \
+    https://github.com/kubernetes-incubator/cri-tools/releases/download/v1.12.0/crictl-v1.12.0-linux-amd64.tar.gz \
     | tar xz crictl"
 
   _install_bin crictl
+}
+
+_minikube() {
+  _kubectl
+  _crictl
 
   _cache minikube "curl -Lo minikube \
     https://storage.googleapis.com/minikube/releases/v0.30.0/minikube-linux-amd64"
@@ -73,20 +78,17 @@ _minikube() {
 }
 
 _oc_cluster() {
-  local CVER=$1
-
   sudo sed -i 's%DOCKER_OPTS=\"%DOCKER_OPTS=\"--insecure-registry 172.30.0.0/16 %' /etc/default/docker
   sudo systemctl restart docker
 
-  _oc $CVER
+  _oc
 }
 
 _minishift() {
-  local CVER=$1
-
+  local MVER=1.26.1
   _cache minishift "curl -L \
-    https://github.com/minishift/minishift/releases/download/v1.25.0/minishift-1.25.0-linux-amd64.tgz \
-    | tar xz --strip-components=1 minishift-1.25.0-linux-amd64/minishift"
+    https://github.com/minishift/minishift/releases/download/v$MVER/minishift-$MVER-linux-amd64.tgz \
+    | tar xz --strip-components=1 minishift-$MVER-linux-amd64/minishift"
 
   _install_bin minishift
 
@@ -106,7 +108,7 @@ cat $USSH/ci_id_rsa.pub >> /root/.ssh/authorized_keys
 chmod g-rw,o-rw /root/.ssh /root/.ssh/* $USSH/* $USSH
 EOF
 
-  _oc $CVER
+  _oc
 }
 
-_$1 $2
+_${1:-$DEFAULT_PLATFORM}

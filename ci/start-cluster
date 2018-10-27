@@ -1,7 +1,12 @@
 #!/bin/bash
-# usage: start-cluster (minikube|oc_cluster) $VERSION
+# usage: start-cluster (minikube|oc_cluster) $CLUSTER_VERSION
 
 set -e
+
+source ci/defaults
+
+warn() { echo "WARN: $@" >&2 ; }
+condarg() { [[ -n "$2" ]] && echo "$1$2"; }
 
 _minikube() {
   local CVER=$1
@@ -17,7 +22,7 @@ _minikube() {
 
   sudo -E minikube start \
     --vm-driver=none \
-    --kubernetes-version=v$CVER
+    $(condarg "--kubernetes-version=v" $CVER)
 #    --feature-gates=DevicePlugins=true
 
   minikube update-context
@@ -26,26 +31,16 @@ _minikube() {
 _oc_cluster() {
   local CVER=$1
 
+  [[ -n "$CVER" ]] && {
+    warn "Version '$CVER' was requested."
+    warn "oc cluster does not supporting setting a version."
+    warn "This is not criticial. Continuing."
+  } 2>/dev/stderr
+
   oc version
   oc cluster up --skip-registry-check --enable=-router,-sample-templates
 
-
-  # Workaround for https://github.com/openshift/origin/pull/20351
-  #
-  # Enable feature gate
-  oc cluster down
-  sed -i "/kind/ a\kubeletArguments:\n  feature-gates:\n  - DevicePlugins=true" $PWD/openshift.local.clusterup/node/node-config.yaml
-  oc cluster up --skip-registry-check
-
-  #
-  # Fix DP path
-  KUBELET_ROOTFS=$(sudo docker inspect $(sudo docker ps | grep kubelet | cut -d" " -f1) | jq -r ".[0].GraphDriver.Data.MergedDir" -)
-  sudo mkdir -p /var/lib/kubelet/device-plugins $KUBELET_ROOTFS/var/lib/kubelet/device-plugins
-  sudo mount -o bind $KUBELET_ROOTFS/var/lib/kubelet/device-plugins /var/lib/kubelet/device-plugins
-  sudo ls /var/lib/kubelet/device-plugins
-  #sudo mount --make-rshared $KUBELET_ROOTFS/var/lib/kubelet/device-plugins
-  # Workaround DONE
-
+  # Needed to watch all pods to come up
   oc login -u system:admin
 }
 
@@ -58,56 +53,12 @@ _minishift() {
     --remote-ipaddress 127.0.0.1 \
     --remote-ssh-user root \
     --remote-ssh-key $HOME/.ssh/ci_id_rsa \
-    --openshift-version=v$CVER
+    $(condarg "--openshift-version=v" $CVER)
 
-  # Workaround for https://github.com/openshift/origin/pull/20351
-  minishift ssh -- bash <<EOF
-  set -xe
-  id
-
-  #
-  # Enable feature gate
-  # vm-driver=generic 
-  _NODECFG=/var/lib/minishift/openshift.local/config/node-localhost/node-config.yaml
-  if [[ -f "\$_NODECFG" ]];
-  then
-    NODECFG=\$_NODECFG
-  else
-    # vm-driver=generic
-    NODECFG=/var/lib/minishift/base/node/node-config.yaml
-  fi
-
-  [[ -f "\$NODECFG" ]]
-
-  # If it has a kubeletArguments key:
-  if grep kubeletArguments \$NODECFG;
-  then
-    sed -e "/kubeletArguments/ a\  feature-gates:" \$NODECFG
-    sed -e "/feature-gates/ a\  - DevicePlugins: true" \$NODECFG
-  # If it hasnt:
-  else
-    sed -i "/kind/ a\kubeletArguments:\n  feature-gates:\n  - DevicePlugins=true" \$NODECFG
-  fi
-  # Featur gate enabled
-  #
-
-  #
-  # Fix DP path
-  KUBELET_CONTAINER=\$(sudo docker ps | grep kubelet | cut -d" " -f1)
-  docker exec \$KUBELET_CONTAINER touch /barbar
-  KUBELET_ROOTFS=\$(dirname \$(sudo sh -c "find /var/lib/docker/aufs/mnt /var/lib/docker/overlay2/*/merged -name barbar"))
-
-  [[ -n "\$KUBELET_ROOTFS" ]]
-
-  sudo mkdir -p /var/lib/kubelet/device-plugins \$KUBELET_ROOTFS/var/lib/kubelet/device-plugins
-  sudo mount -o bind \$KUBELET_ROOTFS/var/lib/kubelet/device-plugins /var/lib/kubelet/device-plugins
-  sudo ls /var/lib/kubelet/device-plugins
-  # Workaround DONE
-EOF
-
+  # Needed to watch all pods to come up
   oc login -u system:admin
 }
 
-_$1 $2
+_${1:-$DEFAULT_PLATFORM} ${2:-$DEFAULT_CLUSTER_VERSION}
 
 timeout 1m bash ci/wait-pods-ok

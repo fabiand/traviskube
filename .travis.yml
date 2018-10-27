@@ -8,22 +8,24 @@ branches:
 
 env:
   global:
-    - KUBEVIRT_VER=v0.9.1
+    - KUBEVIRT_VER=0.9.1
 
 jobs:
   include:
     - stage: Tests
-      name: "minikube (1.11)"
-      env: CPLATFORM=minikube CDIST=kubernetes CVER=1.11.3
+      name: "Default (minikube with latest k8s)"
 
-    - name: "oc cluster (3.10)"
-      env: CPLATFORM=oc_cluster CDIST=origin CVER=3.10.0
+    - name: "minikube (latest k8s)"
+      env: CPLATFORM=minikube
 
-    - name: "minishift (3.10)"
-      env: CPLATFORM=minishift CDIST=origin CVER=3.10.0
+    - name: "oc cluster (latest okd)"
+      env: CPLATFORM=oc_cluster
 
-    - name: "minikube (1.10)"
-      env: CPLATFORM=minikube CDIST=kubernetes CVER=1.10.7
+    - name: "minishift (latest okd)"
+      env: CPLATFORM=minishift
+
+    - name: "minikube (K8s v1.10)"
+      env: CPLATFORM=minikube CVER=1.10.7
 
 cache:
   directories:
@@ -36,10 +38,10 @@ before_script:
 ### And https://github.com/LiliC/travis-minikube/blob/e0f26f7b388057f51a0e2558afd5f990e07b6c49/.travis.yml#L11
 - sudo mount --make-rshared /
 
-- bash -x ci/prepare-host $CPLATFORM $CVER
-- bash -x ci/prepare-host virtctl $KUBEVIRT_VER
+- bash -x ci/prepare-host $CPLATFORM
+- bash -x ci/prepare-host virtctl
 - bash -x ci/start-cluster $CPLATFORM $CVER
-- bash -x ci/deploy-kubevirt $CDIST $KUBEVIRT_VER
+- bash -x ci/deploy-kubevirt $CPLATFORM
 
 script:
 - timeout 5m bash -x test.sh
