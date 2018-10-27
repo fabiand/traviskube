@@ -7,5 +7,6 @@
 #
 
 # Add a workaround here
+# Prefix it with for_, i.e.: for_minishift_dp_issue()
 
 _$@

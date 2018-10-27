@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+
+if egrep "^for_" $(dirname $(realpath $0))/../ci/workaround;
+then
+  echo true
+  exit 0
+fi
+
+echo false
+exit 1
+
