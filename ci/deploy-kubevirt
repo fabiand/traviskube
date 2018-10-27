@@ -15,6 +15,8 @@ _kubernetes() {
 _origin() {
   local VER=$1
 
+  oc login -u system:admin
+
   _kubernetes $VER
 
   oc adm policy add-scc-to-user privileged -n kube-system -z kubevirt-privileged

@@ -39,8 +39,6 @@ _oc_cluster() {
 
   oc version
   oc cluster up --skip-registry-check --enable=-router,-sample-templates
-
-  oc login -u system:admin
 }
 
 _minishift() {
@@ -53,8 +51,6 @@ _minishift() {
     --remote-ssh-user root \
     --remote-ssh-key $HOME/.ssh/ci_id_rsa \
     $(condarg "--openshift-version=v" $CVER)
-
-  oc login -u system:admin
 }
 
 _${1:-$DEFAULT_PLATFORM} ${2:-$DEFAULT_CLUSTER_VERSION}
