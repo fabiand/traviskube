@@ -85,7 +85,7 @@ _oc_cluster() {
 }
 
 _minishift() {
-  local MVER=1.26.1
+  local MVER=1.27.0
   _cache minishift "curl -L \
     https://github.com/minishift/minishift/releases/download/v$MVER/minishift-$MVER-linux-amd64.tgz \
     | tar xz --strip-components=1 minishift-$MVER-linux-amd64/minishift"
