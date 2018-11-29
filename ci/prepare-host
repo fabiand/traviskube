@@ -80,6 +80,7 @@ _minikube() {
 _oc_cluster() {
   sudo sed -i 's%DOCKER_OPTS=\"%DOCKER_OPTS=\"--insecure-registry 172.30.0.0/16 %' /etc/default/docker
   sudo systemctl restart docker
+  echo 'openshift.local.clusterup' >> .dockerignore
 
   _oc
 }
