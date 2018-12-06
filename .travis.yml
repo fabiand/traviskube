@@ -24,9 +24,6 @@ jobs:
     - name: "minishift (latest okd)"
       env: CPLATFORM=minishift
 
-    - name: "minikube (K8s v1.10)"
-      env: CPLATFORM=minikube CVER=1.10.7
-
 cache:
   directories:
   - cache
