@@ -61,4 +61,4 @@ _minishift() {
 
 _${1:-$DEFAULT_PLATFORM} ${2:-$DEFAULT_CLUSTER_VERSION}
 
-timeout 1m bash ci/wait-pods-ok
+bash ci/wait-pods-ok
