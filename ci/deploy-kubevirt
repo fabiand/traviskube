@@ -8,6 +8,7 @@ source $(dirname $(realpath $0))/defaults
 _kubernetes() {
   local VER=$1
 
+  kubectl create namespace kubevirt
   kubectl create configmap -n kubevirt kubevirt-config --from-literal debug.useEmulation=true || :
   kubectl apply -f https://github.com/kubevirt/kubevirt/releases/download/$VER/kubevirt.yaml ;
 }
