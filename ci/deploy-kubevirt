@@ -23,14 +23,14 @@ _origin() {
 
   oc login -u system:admin
 
-  if [[ -n "$USE_OPERATOR" ]];
-  then
+#  if [[ -n "$USE_OPERATOR" ]];
+#  then
     oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-operator
-  else
+#  else
     oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-privileged
     oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-controller
     oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-apiserver
-  fi
+#  fi
 
   _kubernetes $VER
 }
