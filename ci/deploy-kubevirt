@@ -29,7 +29,15 @@ _origin() {
 
 _${CDIST_ON[${1:-$DEFAULT_PLATFORM}]} ${2:-$DEFAULT_KUBEVIRT_VER}
 
-bash ci/wait-pods-ok
+(
+  kubectl wait --timeout=180s --for=condition=Created -n kubevirt kv/kubevirt ;
+  kubectl wait --timeout=180s --for=condition=Ready -n kubevirt kv/kubevirt
+) || {
+  echo "Something went wrong"
+  kubectl describe -n kubevirt kv/kubevirt
+  kubectl describe pods -n kubevirt
+  exit 1
+}
 
 # Give kvm some time to be announced
 sleep 12
