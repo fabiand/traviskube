@@ -23,14 +23,15 @@ _origin() {
 
   oc login -u system:admin
 
-#  if [[ -n "$USE_OPERATOR" ]];
-#  then
+  if [[ -n "$USE_OPERATOR" ]];
+  then
+    oc adm policy add-scc-to-group anyuid system:authenticated
     oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-operator
-#  else
+  else
     oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-privileged
     oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-controller
     oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-apiserver
-#  fi
+  fi
 
   _kubernetes $VER
 }
@@ -47,6 +48,7 @@ then
   echo "Something went wrong"
   kubectl describe -n kubevirt kv/kubevirt
   kubectl describe pods -n kubevirt
+  kubectl get scc privileged -o=yaml
   exit 1
 }
 else
