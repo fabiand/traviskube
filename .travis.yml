@@ -11,9 +11,6 @@ jobs:
     - stage: Tests
       name: "Default (minikube with latest k8s)"
 
-    - name: "minikube (latest k8s)"
-      env: CPLATFORM=minikube
-
     - name: "oc cluster (latest okd)"
       env: CPLATFORM=oc_cluster
 
