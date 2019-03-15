@@ -1,5 +1,5 @@
 function get_handler_pods {
-  kubectl get pods -n kubevirt -l kubevirt.io=virt-handler | tail -n +2 | awk -e '{print$1}'
+  kubectl get pods -n kubevirt -l kubevirt.io=virt-handler --no-headers
 }
 
 function get_handler_logs {
