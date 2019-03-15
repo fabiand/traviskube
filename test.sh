@@ -1,4 +1,14 @@
-kubectl logs -l kubevirt.io=virt-handler --all-containers
+function get_handler_pods {
+  kubectl get pods -n kubevirt -l kubevirt.io=virt-handler | tail -n +2 | awk -e '{print$1}'
+}
+
+function get_handler_logs {
+  for pod in $(get_handler_pods); do
+    kubectl logs -n kubevirt $pod
+  done
+}
+
+get_handler_pods
 kubectl get events --all-namespaces
 kubectl get pods --all-namespaces
 kubectl describe nodes | tee /dev/stderr | grep devices.kubevirt.io/tun
