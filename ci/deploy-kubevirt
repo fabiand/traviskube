@@ -29,7 +29,7 @@ _origin() {
     # Workaround for travis
     oc adm policy add-scc-to-group anyuid system:authenticated
   else
-    oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-privileged
+    oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-handler
     oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-controller
     oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-apiserver
   fi
