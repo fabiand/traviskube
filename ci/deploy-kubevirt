@@ -5,16 +5,21 @@ set -e
 
 source $(dirname $(realpath $0))/defaults
 
+_enable_software_emulation() {
+    kubectl create configmap -n kubevirt kubevirt-config --from-literal debug.useEmulation=true || :
+}
+
 _kubernetes() {
   local VER=$1
 
   if [[ -n "$USE_OPERATOR" ]];
   then
     kubectl apply -f https://github.com/kubevirt/kubevirt/releases/download/$VER/kubevirt-operator.yaml ;
-    kubectl create configmap -n kubevirt kubevirt-config --from-literal debug.useEmulation=true || :
+    _enable_software_emulation
     kubectl apply -f https://github.com/kubevirt/kubevirt/releases/download/$VER/kubevirt-cr.yaml ;
   else
     kubectl apply -f https://github.com/kubevirt/kubevirt/releases/download/$VER/kubevirt.yaml ;
+    _enable_software_emulation
   fi
 }
 
