@@ -22,16 +22,8 @@ _origin() {
 
   oc login -u system:admin
 
-  if [[ -n "$USE_OPERATOR" ]];
-  then
-    oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-operator
-    # Workaround for travis
-    oc adm policy add-scc-to-group anyuid system:authenticated
-  else
-    oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-handler
-    oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-controller
-    oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-apiserver
-  fi
+  # Workaround for travis
+  oc adm policy add-scc-to-group anyuid system:authenticated
 
   _kubernetes $VER
 }
