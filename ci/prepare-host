@@ -54,7 +54,7 @@ _oc() {
 
 _kubectl() {
   _cache kubectl "curl -Lo kubectl \
-    https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl"
+    https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl"
 
   _install_bin kubectl
 }
