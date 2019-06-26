@@ -1,5 +1,5 @@
 #!/bin/bash
-# usage: start-cluster (minikube|oc_cluster) $CLUSTER_VERSION
+# usage: start-cluster (minikube|kind|oc_cluster) $CLUSTER_VERSION
 
 set -e
 
@@ -26,6 +26,25 @@ _minikube() {
 #    --feature-gates=DevicePlugins=true
 
   minikube update-context
+}
+
+_kind() {
+  local CVER=$1
+
+  # https://kind.sigs.k8s.io/docs/user/quick-start#multi-node-clusters
+  tee cluster.yaml <<EOC
+kind: Cluster
+apiVersion: kind.sigs.k8s.io/v1alpha3
+nodes:
+- role: control-plane
+- role: worker
+- role: worker
+EOC
+
+  kind create cluster --config cluster.yaml
+
+  mkdir -p $HOME/.kube
+  ln -sv "$(kind get kubeconfig-path)" $HOME/.kube/config
 }
 
 _oc_cluster() {

@@ -1,5 +1,5 @@
 #!/bin/bash
-# usage: prepare-host (minikube|oc_cluster|minishift|virtctl|oc)
+# usage: prepare-host (minikube|kind|oc_cluster|minishift|virtctl|oc)
 
 set -e
 
@@ -75,6 +75,15 @@ _minikube() {
     https://storage.googleapis.com/minikube/releases/v1.0.1/minikube-linux-amd64"
 
   _install_bin minikube
+}
+
+_kind() {
+  _kubectl
+
+  _cache kind "curl -Lo kind \
+    https://github.com/kubernetes-sigs/kind/releases/download/v0.4.0/kind-linux-amd64"
+
+  _install_bin kind
 }
 
 _oc_cluster() {
