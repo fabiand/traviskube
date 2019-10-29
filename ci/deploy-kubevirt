@@ -32,7 +32,7 @@ _${CDIST_ON[${1:-$DEFAULT_PLATFORM}]} ${2:-$DEFAULT_KUBEVIRT_VER}
 
 
 (
-  kubectl wait --timeout=240s --for=condition=Ready -n kubevirt kv/kubevirt ;
+  kubectl wait --timeout=240s --for=condition=Available -n kubevirt kv/kubevirt ;
 ) || {
   echo "Something went wrong"
   kubectl describe -n kubevirt kv/kubevirt
