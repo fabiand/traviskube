@@ -9,6 +9,7 @@ function get_handler_logs {
 }
 
 get_handler_logs
+kubectl describe -n kubevirt kubevirt kubevirt
 kubectl get events --all-namespaces
 kubectl get pods --all-namespaces
 kubectl describe nodes | tee /dev/stderr | grep devices.kubevirt.io/tun
