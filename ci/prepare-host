@@ -81,7 +81,7 @@ _kind() {
   _kubectl
 
   _cache kind "curl -Lo kind \
-    https://github.com/kubernetes-sigs/kind/releases/download/v0.4.0/kind-linux-amd64"
+    https://github.com/kubernetes-sigs/kind/releases/download/v0.5.1/kind-linux-amd64"
 
   _install_bin kind
 }
