@@ -2,7 +2,9 @@ DEFAULT_PLATFORM=minikube
 DEFAULT_CLUSTER=kubernetes
 # Intentionally unset, as set my platform usually
 DEFAULT_CLUSTER_VERSION=
-DEFAULT_KUBEVIRT_VER=v0.23.0
+# Default to latest release
+# DEFAULT_KUBEVIRT_VER=v0.23.0
+DEFAULT_KUBEVIRT_VER="v$(curl -s https://api.github.com/repos/kubevirt/kubevirt/releases/latest | jq -r .tag_name | sed 's/^v//')"
 
 declare -A CDIST_ON
 CDIST_ON[minikube]=kubernetes
