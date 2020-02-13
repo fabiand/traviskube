@@ -44,7 +44,7 @@ EOC
   kind create cluster --config cluster.yaml
 
   mkdir -p $HOME/.kube
-  ln -sv "$(kind get kubeconfig-path)" $HOME/.kube/config
+  ln -sv "$(kind get kubeconfig)" $HOME/.kube/config
 }
 
 _oc_cluster() {
