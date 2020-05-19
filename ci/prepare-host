@@ -1,5 +1,5 @@
 #!/bin/bash
-# usage: prepare-host (minikube|kind|oc_cluster|minishift|virtctl|oc)
+# usage: prepare-host (minikube|kind|k3s|oc_cluster|minishift|virtctl|oc)
 
 set -e
 
@@ -84,6 +84,11 @@ _kind() {
     https://github.com/kubernetes-sigs/kind/releases/download/v0.7.0/kind-linux-amd64"
 
   _install_bin kind
+}
+
+_k3s() {
+  # NOOP All done in start cluster
+  echo
 }
 
 _oc_cluster() {

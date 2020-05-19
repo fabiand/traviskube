@@ -1,5 +1,5 @@
 #!/bin/bash
-# usage: start-cluster (minikube|kind|oc_cluster) $CLUSTER_VERSION
+# usage: start-cluster (minikube|kind|k3s|oc_cluster) $CLUSTER_VERSION
 
 set -e
 
@@ -45,6 +45,13 @@ EOC
 
   mkdir -p $HOME/.kube
   kind get kubeconfig > $HOME/.kube/config
+}
+
+_k3s() {
+  # https://github.com/rancher/k3s#quick-start---install-script
+  curl -sfL https://get.k3s.io | sudo sh -
+  sudo chmod a+rwX /etc/rancher/k3s/k3s.yaml
+  export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 }
 
 _oc_cluster() {
