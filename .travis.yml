@@ -17,12 +17,6 @@ jobs:
     - name: "k3s (latest k8s)"
       env: CPLATFORM=k3s
 
-    - name: "oc cluster (latest okd)"
-      env: CPLATFORM=oc_cluster
-
-    - name: "minishift (latest okd)"
-      env: CPLATFORM=minishift
-
 cache:
   directories:
   - cache
