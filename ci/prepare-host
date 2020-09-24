@@ -54,14 +54,14 @@ _oc() {
 
 _kubectl() {
   _cache kubectl "curl -Lo kubectl \
-    https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl"
+    https://storage.googleapis.com/kubernetes-release/release/v1.19.0/bin/linux/amd64/kubectl"
 
   _install_bin kubectl
 }
 
 _crictl() {
   _cache crictl "curl -L \
-    https://github.com/kubernetes-incubator/cri-tools/releases/download/v1.15.0/crictl-v1.15.0-linux-amd64.tar.gz \
+    https://github.com/kubernetes-incubator/cri-tools/releases/download/v1.19.0/crictl-v1.19.0-linux-amd64.tar.gz \
     | tar xz crictl"
 
   _install_bin crictl
