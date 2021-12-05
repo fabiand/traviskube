@@ -1,5 +1,5 @@
 #!/bin/bash
-# usage: start-cluster (minikube|kind|k3s|oc_cluster) $CLUSTER_VERSION
+# usage: start-cluster (minikube|kind|k3s|microk8s|oc_cluster) $CLUSTER_VERSION
 
 set -e
 
@@ -51,7 +51,16 @@ _k3s() {
   # https://github.com/rancher/k3s#quick-start---install-script
   curl -sfL https://get.k3s.io | sudo sh -
   sudo chmod a+rwX /etc/rancher/k3s/k3s.yaml
-  export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+}
+
+_microk8s() {
+  # https://microk8s.io/docs
+  sudo snap install microk8s --classic --channel=1.18/stable
+  sudo microk8s status --wait-ready
+  sudo microk8s enable dns dashboard registry
+  mkdir -p $HOME/.kube
+  sudo chmod a+rwX $HOME/.kube  # wohoo
+  sudo microk8s kubectl config view | tee $HOME/.kube/config
 }
 
 _oc_cluster() {

@@ -1,5 +1,5 @@
 #!/bin/bash
-# usage: prepare-host (minikube|kind|k3s|oc_cluster|minishift|virtctl|oc)
+# usage: prepare-host (minikube|kind|k3s|microk8s|oc_cluster|minishift|virtctl|oc)
 
 set -e
 
@@ -89,6 +89,15 @@ _kind() {
 _k3s() {
   # NOOP All done in start cluster
   echo
+}
+
+_microk8s() {
+  _k3s
+  cat | sudo tee /usr/local/bin/kubectl <<EOF
+#!/usr/bin/bash
+sudo -E microk8s kubectl \$@
+EOF
+  sudo chmod a+x /usr/local/bin/kubectl
 }
 
 _oc_cluster() {

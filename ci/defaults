@@ -8,5 +8,6 @@ declare -A CDIST_ON
 CDIST_ON[minikube]=kubernetes
 CDIST_ON[kind]=kubernetes
 CDIST_ON[k3s]=kubernetes
+CDIST_ON[microk8s]=kubernetes
 CDIST_ON[minishift]=origin
 CDIST_ON[oc_cluster]=origin

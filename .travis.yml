@@ -17,6 +17,9 @@ jobs:
     - name: "k3s (latest k8s)"
       env: CPLATFORM=k3s
 
+    - name: "microk8s (latest k8s)"
+      env: CPLATFORM=microk8s
+
 cache:
   directories:
   - cache
