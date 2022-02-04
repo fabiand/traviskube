@@ -53,15 +53,16 @@ _oc() {
 }
 
 _kubectl() {
+  local K8S_STABLE=$(curl -L -s https://dl.k8s.io/release/stable.txt)
   _cache kubectl "curl -Lo kubectl \
-    https://storage.googleapis.com/kubernetes-release/release/v1.19.0/bin/linux/amd64/kubectl"
+    https://dl.k8s.io/release/${K8S_STABLE}/bin/linux/amd64/kubectl"
 
   _install_bin kubectl
 }
 
 _crictl() {
   _cache crictl "curl -L \
-    https://github.com/kubernetes-incubator/cri-tools/releases/download/v1.19.0/crictl-v1.19.0-linux-amd64.tar.gz \
+    https://github.com/kubernetes-incubator/cri-tools/releases/download/v1.23.0/crictl-v1.23.0-linux-amd64.tar.gz \
     | tar xz crictl"
 
   _install_bin crictl
@@ -81,7 +82,7 @@ _kind() {
   _kubectl
 
   _cache kind "curl -Lo kind \
-    https://github.com/kubernetes-sigs/kind/releases/download/v0.9.0/kind-linux-amd64"
+    https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64"
 
   _install_bin kind
 }
