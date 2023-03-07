@@ -54,14 +54,14 @@ _oc() {
 
 _kubectl() {
   _cache kubectl "curl -Lo kubectl \
-    https://storage.googleapis.com/kubernetes-release/release/v1.19.0/bin/linux/amd64/kubectl"
+    https://storage.googleapis.com/kubernetes-release/release/v1.26.0/bin/linux/amd64/kubectl"
 
   _install_bin kubectl
 }
 
 _crictl() {
   _cache crictl "curl -L \
-    https://github.com/kubernetes-incubator/cri-tools/releases/download/v1.19.0/crictl-v1.19.0-linux-amd64.tar.gz \
+    https://github.com/kubernetes-incubator/cri-tools/releases/download/v1.26.0/crictl-v1.26.0-linux-amd64.tar.gz \
     | tar xz crictl"
 
   _install_bin crictl
@@ -81,7 +81,7 @@ _kind() {
   _kubectl
 
   _cache kind "curl -Lo kind \
-    https://github.com/kubernetes-sigs/kind/releases/download/v0.9.0/kind-linux-amd64"
+    https://github.com/kubernetes-sigs/kind/releases/download/v0.17.0/kind-linux-amd64"
 
   _install_bin kind
 }
@@ -100,7 +100,7 @@ _oc_cluster() {
 }
 
 _minishift() {
-  local MVER=1.27.0
+  local MVER=1.34.3
   _cache minishift "curl -L \
     https://github.com/minishift/minishift/releases/download/v$MVER/minishift-$MVER-linux-amd64.tgz \
     | tar xz --strip-components=1 minishift-$MVER-linux-amd64/minishift"
